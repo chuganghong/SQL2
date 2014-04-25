@@ -1,0 +1,23 @@
+-- Filename:sp-cursor.sql
+USE mysql;
+DELIMITER //
+DROP FUNCTION IF EXISTS cursor_example//
+CREATE PROCEDURE cursor_example ()
+BEGIN
+	DECLARE 1_user VARCHAR(200);
+	DECLARE done BOOLEAN DEFAULT FALSE;
+	DECLARE cur1 CURSOR FOR SELECT user FROM mysql.user;
+	DECLARE CONTINUE HANDLER FOR NOT FOUND
+		SET done = TRUE;
+	OPEN cur1;
+	
+	lab:
+	LOOP
+		FETCH cur1 INTO 1_user;
+		IF (done) THEN
+			LEAVE lab;
+		END IF;
+	END LOOP;
+END//
+
+DELIMITER ;
