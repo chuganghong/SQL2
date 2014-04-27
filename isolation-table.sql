@@ -25,3 +25,45 @@ START TRANSACTION;
 INSERT INTO transaction_test (val) VALUES ('x'),('y'),('z');
 SELECT * FROM transaction_test;
 COMMIT;
+
+-- Read Committed TEST START
+TRUNCATE TABLE transaction_test;
+INSERT INTO transaction_test (val) VALUES ('a'),('b'),('c');
+
+SET @@session.tx_isolation = 'READ-COMMITTED';
+SELECT @@global.tx_isolation, @@session.tx_isolation;
+START TRANSACTION;
+SELECT * FROM transaction_test;
+SELECT SLEEP(20);
+INSERT INTO transaction_test (val) VALUES (@@session.tx_isolation);
+SELECT * FROM transaction_test;
+COMMIT;
+
+START TRANSACTION;
+INSERT INTO transaction_test (val) VALUES ('x'),('y'),('z');
+SELECT * FROM transaction_test;
+COMMIT;
+
+-- Read Committed End
+
+-- Serializable START
+SET @@session.tx_isolation = 'SERIALIZABLE';
+TRUNCATE TABLE transaction_test;
+INSERT INTO transaction_test (val) VALUES ('a'),('b'),('c');
+
+
+SELECT @@global.tx_isolation, @@session.tx_isolation;
+START TRANSACTION;
+SELECT * FROM transaction_test;
+SELECT SLEEP(40);
+INSERT INTO transaction_test (val) VALUES (@@session.tx_isolation);
+SELECT * FROM transaction_test;
+COMMIT;
+
+START TRANSACTION;
+INSERT INTO transaction_test (val) VALUES ('x'),('y'),('z');
+SELECT * FROM transaction_test;
+COMMIT;
+
+-- SERIALIZABLE end
+

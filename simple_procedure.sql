@@ -1,0 +1,22 @@
+-- Filename: simple_procedure.sql
+
+DELIMITER $$
+
+CREATE PROCEDURE fill()
+DETERMINISTIC
+	BEGIN
+		DECLARE i INT DEFAULT 0;
+		TRUNCATE TABLE test;
+		WHILE i < 500
+		DO 
+			START TRANSACTION;
+			INSERT INTO test (val) VALUES ( 'REPLICATION' );
+			SET i = i + 1;
+		END WHILE;
+		COMMIT;
+	END $$
+
+DELIMITER ;
+
+CALL fill();
+		
