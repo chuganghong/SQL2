@@ -52,3 +52,11 @@ ALTER EVENT e_minute ENABLE; --重启事件
 SELECT SLEEP(60);
 DROP event e_minute;
 SHOW EVENTS\G
+
+-- 事件特权。不知如何何时使用这两条语句。
+GRANT EVENT ON studysql.* TO root@localhost;
+REVOKE EVENT ONT studysql.* FROM root@localhost;
+
+-- 事件元数据。有啥用？
+SELECT * FROM mysql.event\G
+SELECT * FROM INFORMATION_SCHEMA.EVENTS\G
